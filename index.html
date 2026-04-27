@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>智慧衣櫥 v5.9 — 專屬客製版</title>
+<title>智慧衣櫥 v5.10 — 專屬客製版</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -96,7 +96,7 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
 <body>
 
 <div class="app">
-  <div class="hd"><span class="hd-t">Wardrobe <span style="font-size:12px; color:var(--blue);">v5.9</span></span><span class="storage-txt" id="st-txt">計算中...</span></div>
+  <div class="hd"><span class="hd-t">Wardrobe <span style="font-size:12px; color:var(--blue);">v5.10</span></span><span class="storage-txt" id="st-txt">計算中...</span></div>
 
   <div id="p-cat" class="panel active">
     <div class="zone" id="dz" onclick="document.getElementById('fi').click()">
@@ -124,7 +124,15 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
         </div>
         <div class="fld"><span class="lbl">顏色</span><input type="text" id="ef-color" placeholder="例：燕麥色"></div>
       </div>
-      <div class="fld" style="margin-bottom:12px;"><span class="lbl">購入價格</span><input type="number" id="ef-price"></div>
+      <div class="g2">
+        <div class="fld">
+          <span class="lbl">尺寸</span>
+          <select id="ef-size">
+            <option value="未填">未填</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>F</option>
+          </select>
+        </div>
+        <div class="fld"><span class="lbl">購入價格</span><input type="number" id="ef-price"></div>
+      </div>
       <button class="btn btn-p" onclick="addItem()">完成建檔</button>
       <button class="btn btn-sec" onclick="skipItem()">跳過</button>
     </div>
@@ -135,6 +143,7 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
       <div class="search-box"><span>🔍</span><input type="text" id="search-input" placeholder="搜尋..." oninput="renderWar()"></div>
       <select class="sort-sel" id="sort-order" onchange="renderWar()">
         <option value="new">🆕 最新加入</option>
+        <option value="size_asc">📏 尺寸 (小➔大)</option>
         <option value="cpw_high">💸 CPW 最高</option>
         <option value="cpw_low">👑 CPW 最低</option>
         <option value="wear_most">🔥 最常穿</option>
@@ -224,14 +233,22 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
       </div>
       <div class="fld"><span class="lbl">顏色</span><input type="text" id="ed-color"></div>
     </div>
-    <div class="fld"><span class="lbl">價格</span><input type="number" id="ed-price"></div>
+    <div class="g2">
+      <div class="fld">
+        <span class="lbl">尺寸</span>
+        <select id="ed-size">
+          <option value="未填">未填</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>F</option>
+        </select>
+      </div>
+      <div class="fld"><span class="lbl">價格</span><input type="number" id="ed-price"></div>
+    </div>
     <input type="hidden" id="ed-id">
     
     <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
       <button class="btn btn-p" onclick="saveEdit()" style="margin:0;">儲存修改</button>
       <div class="g2" style="margin:0;">
         <button class="btn btn-sec" onclick="document.getElementById('edit-modal').classList.remove('active')" style="margin:0;">取消</button>
-        <button class="btn" style="background:#FFF1F0; color:var(--red); margin:0;" onclick="deleteItem()">刪除單品</button>
+        <button class="btn" style="background:#FFF1F0; color:var(--red); margin:0;" onclick="deleteItem()">刪除</button>
       </div>
     </div>
   </div>
@@ -260,17 +277,14 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
 
 <script>
 // --- 資料初始化 ---
-let W = JSON.parse(localStorage.getItem('wv59') || localStorage.getItem('wv58') || localStorage.getItem('wv57') || '[]');
+let W = JSON.parse(localStorage.getItem('wv59') || localStorage.getItem('wv58') || '[]');
 let OOTD = JSON.parse(localStorage.getItem('wv59_ootd') || localStorage.getItem('wv58_ootd') || '[]');
 let PACK = JSON.parse(localStorage.getItem('wv59_pack') || localStorage.getItem('wv58_pack') || '[]');
 let FAV = JSON.parse(localStorage.getItem('wv59_fav') || localStorage.getItem('wv58_fav') || '[]');
 let uploadQueue = [];
 
-// 資料相容性自動修復：把舊的「下身」改成「褲子」，把「四季」改成「春」
-W.forEach(i => { 
-  if(i.type === '下身') i.type = '褲子';
-  if(!i.season || i.season === '四季' || i.season === '春夏' || i.season === '秋冬') i.season = '春';
-});
+// 尺寸邏輯對照表 (越小數字代表尺寸越小)
+const sizeOrder = { 'XS':1, 'S':2, 'M':3, 'L':4, 'XL':5, 'XXL':6, 'F':7, '未填':99 };
 
 function cpw(i) { return Math.round(i.price / ((i.wears || []).length || 1)); }
 
@@ -293,12 +307,12 @@ function processQueue(){
     document.getElementById('step2').style.display='none'; document.getElementById('dz').style.display='block'; return;
   }
   document.getElementById('dz').style.display='none'; window.lastB64 = uploadQueue[0];
-  document.getElementById('ef-name').value=''; document.getElementById('ef-color').value=''; document.getElementById('ef-price').value='';
+  document.getElementById('ef-name').value=''; document.getElementById('ef-color').value=''; document.getElementById('ef-price').value=''; document.getElementById('ef-size').value='未填';
   document.getElementById('batch-status').textContent = uploadQueue.length>1?`連續建檔：剩 ${uploadQueue.length-1} 件`:'最後一件！';
   document.getElementById('step2').style.display='block';
 }
 function addItem(){
-  W.unshift({ id:Date.now(), name:document.getElementById('ef-name').value||'未命名', type:document.getElementById('ef-type').value, season:document.getElementById('ef-season').value, color:document.getElementById('ef-color').value||'未填', price:parseFloat(document.getElementById('ef-price').value)||0, wears:[], image:window.lastB64 });
+  W.unshift({ id:Date.now(), name:document.getElementById('ef-name').value||'未命名', type:document.getElementById('ef-type').value, season:document.getElementById('ef-season').value, color:document.getElementById('ef-color').value||'未填', size:document.getElementById('ef-size').value, price:parseFloat(document.getElementById('ef-price').value)||0, wears:[], image:window.lastB64 });
   saveAll(); toast('已收錄！'); uploadQueue.shift(); processQueue();
 }
 function skipItem(){ uploadQueue.shift(); processQueue(); }
@@ -313,6 +327,7 @@ function renderWar(){
   if(sort === 'cpw_high') list.sort((a,b)=> cpw(b) - cpw(a));
   else if(sort === 'cpw_low') list.sort((a,b)=> cpw(a) - cpw(b));
   else if(sort === 'wear_most') list.sort((a,b)=> (b.wears||[]).length - (a.wears||[]).length);
+  else if(sort === 'size_asc') list.sort((a,b)=> (sizeOrder[a.size]||99) - (sizeOrder[b.size]||99));
   else list.sort((a,b)=> b.id - a.id);
   
   g.innerHTML = list.map(i=>`
@@ -322,7 +337,7 @@ function renderWar(){
       <div class="cbody">
         <div class="c-name">${i.name}</div>
         <div>
-          <span class="tag">CPW $${cpw(i)}</span>
+          <span class="tag">Size: ${i.size || '未填'}</span>
           <span class="tag" style="background:${getColorCode(i.color)}20; color:${getColorCode(i.color)};">${i.color}</span>
         </div>
         <button class="btn btn-sm btn-p" style="margin-top:8px; padding:6px;" onclick="logW(${i.id})">打卡 (${(i.wears||[]).length})</button>
@@ -338,6 +353,7 @@ function openEdit(id) {
   document.getElementById('ed-type').value = i.type; 
   document.getElementById('ed-season').value = i.season || '春';
   document.getElementById('ed-color').value = i.color; 
+  document.getElementById('ed-size').value = i.size || '未填';
   document.getElementById('ed-price').value = i.price;
   document.getElementById('edit-modal').classList.add('active');
 }
@@ -348,6 +364,7 @@ function saveEdit() {
     i.type = document.getElementById('ed-type').value;
     i.season = document.getElementById('ed-season').value; 
     i.color = document.getElementById('ed-color').value || '未填';
+    i.size = document.getElementById('ed-size').value;
     i.price = parseFloat(document.getElementById('ed-price').value) || 0;
     saveAll(); renderWar(); document.getElementById('edit-modal').classList.remove('active'); toast('修改已儲存');
   }
@@ -522,7 +539,7 @@ function exportData() {
   const data = JSON.stringify({ W: W, OOTD: OOTD, PACK: PACK, FAV: FAV });
   const blob = new Blob([data], { type: 'application/json' });
   const url = URL.createObjectURL(blob); const a = document.createElement('a');
-  a.href = url; a.download = `Wardrobe_v5.9_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'')}.json`;
+  a.href = url; a.download = `Wardrobe_v5.10_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'')}.json`;
   a.click(); URL.revokeObjectURL(url); toast('已下載備份檔！');
 }
 function importData(e) {
