@@ -3,59 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>智慧衣櫥 v5.15 — 大容量解鎖版 (防卡死)</title>
+<title>智慧衣櫥 v5.16 — 質感視覺版</title>
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F5F7FA" id="meta-theme-color">
+
 <style>
-/* ─── 核心質感樣式 ─── */
+/* ─── 核心質感樣式 (支援深/淺色變數) ─── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0; -webkit-tap-highlight-color:transparent;}
 :root{
+  /* 預設淺色主題 */
   --bg: #F5F7FA; --sur: #FFFFFF; --sur2: #F0F2F5; --txt: #1C1C1E; --mut: #8E8E93;
   --accent: #2C2C2E; --blue: #007AFF; --red: #FF3B30; --shadow: 0 8px 24px rgba(0,0,0,0.04);
-  --r: 16px; --rl: 24px; --cal-cell-size: 1fr;
+  --nav-bg: rgba(255,255,255,0.85); --r: 16px; --rl: 24px; --cal-cell-size: 1fr;
 }
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--txt); min-height:100vh; font-size:15px; line-height:1.5; padding-bottom:90px;}
-.app{max-width:740px; margin:0 auto; padding:2rem 1.2rem; display:none;} /* 初始隱藏，等資料庫載入 */
+
+/* 🌙 深色主題覆蓋 */
+body.dark-mode {
+  --bg: #000000; --sur: #1C1C1E; --sur2: #2C2C2E; --txt: #F2F2F7; --mut: #98989D;
+  --accent: #E5E5EA; --nav-bg: rgba(28,28,30,0.85); --shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+body.dark-mode .btn-p { color: #1C1C1E; font-weight:800; }
+body.dark-mode .btn-sec { background: #2C2C2E; color: #F2F2F7; }
+body.dark-mode input, body.dark-mode select { color: #F2F2F7; }
+
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--txt); min-height:100vh; font-size:15px; line-height:1.5; padding-bottom:90px; transition: background 0.3s ease, color 0.3s ease;}
+.app{max-width:740px; margin:0 auto; padding:2rem 1.2rem; display:none;} 
 
 .hd{display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem}
 .hd-t{font-size:22px; font-weight:800; letter-spacing:-0.5px}
 .storage-txt{font-size:12px; color:var(--blue); font-weight:700;}
+
+/* 主題切換按鈕 */
+.theme-btn { background: var(--sur); border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; box-shadow: var(--shadow); transition: 0.3s; }
 
 .panel{display:none; animation:fadeIn 0.3s ease;}
 .panel.active{display:block}
 @keyframes fadeIn { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
 
 /* 區塊與表單 */
-.zone{background:var(--sur); border-radius:var(--rl); padding:2.5rem 1rem; text-align:center; cursor:pointer; box-shadow:var(--shadow);}
-.ef{background:var(--sur); border-radius:var(--rl); padding:20px; margin-top:16px; box-shadow:var(--shadow)}
+.zone{background:var(--sur); border-radius:var(--rl); padding:2.5rem 1rem; text-align:center; cursor:pointer; box-shadow:var(--shadow); transition: 0.3s;}
+.ef{background:var(--sur); border-radius:var(--rl); padding:20px; margin-top:16px; box-shadow:var(--shadow); transition: 0.3s;}
 .g2{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px}
 .fld{display:flex; flex-direction:column; gap:6px}
 .lbl{font-size:11px; font-weight:700; color:var(--mut);}
-input,select{font-family:inherit; font-size:14px; padding:12px 14px; border:none; border-radius:12px; background:var(--sur2); width:100%; font-weight:500;}
-input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
+input,select{font-family:inherit; font-size:14px; padding:12px 14px; border:none; border-radius:12px; background:var(--sur2); width:100%; font-weight:500; transition: 0.3s;}
+input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--blue);}
 .chk-group{display:flex; gap:10px; font-size:13px; font-weight:600; align-items:center; flex-wrap:wrap;}
 .chk-group label{display:flex; align-items:center; gap:4px; cursor:pointer;}
 .chk-group input{width:auto; transform:scale(1.2);}
 
 /* 衣櫥工具列與卡片 */
 .tool-bar{display:flex; gap:8px; margin-bottom:16px;}
-.search-box{flex:1; display:flex; align-items:center; background:var(--sur); border-radius:99px; padding:4px 16px; box-shadow:var(--shadow)}
-.search-box input{border:none; background:transparent; padding:10px 5px; width:100%;}
-.sort-sel{background:var(--sur); border-radius:99px; padding:0 12px; border:none; box-shadow:var(--shadow); font-size:13px; font-weight:600; width:auto;}
+.search-box{flex:1; display:flex; align-items:center; background:var(--sur); border-radius:99px; padding:4px 16px; box-shadow:var(--shadow); transition: 0.3s;}
+.search-box input{border:none; background:transparent; padding:10px 5px; width:100%; color:var(--txt);}
+.sort-sel{background:var(--sur); border-radius:99px; padding:0 12px; border:none; box-shadow:var(--shadow); font-size:13px; font-weight:600; width:auto; color:var(--txt); transition: 0.3s;}
 
 .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:16px}
-.card{background:var(--sur); border-radius:var(--rl); overflow:hidden; box-shadow:var(--shadow); padding-bottom:12px; display:flex; flex-direction:column; position:relative;}
+.card{background:var(--sur); border-radius:var(--rl); overflow:hidden; box-shadow:var(--shadow); padding-bottom:12px; display:flex; flex-direction:column; position:relative; transition: 0.3s;}
 .cimg{width:100%; height:160px; object-fit:cover}
 .cbody{padding:12px 12px 0; flex-grow:1; display:flex; flex-direction:column;}
 .c-name{font-weight:700; font-size:14px; margin-bottom:4px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;}
 .tag{font-size:10px; padding:4px 8px; border-radius:6px; background:var(--sur2); color:var(--mut); font-weight:700; display:inline-block; margin-bottom:4px; margin-right:4px;}
 
 /* 彈出視窗 */
-.btn-edit-float{position:absolute; top:8px; right:8px; background:rgba(255,255,255,0.9); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.1); border:none;}
-.modal-overlay{position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); display:none; align-items:center; justify-content:center; z-index:1000; padding:20px;}
+.btn-edit-float{position:absolute; top:8px; right:8px; background:rgba(255,255,255,0.8); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.1); border:none; color:#333;}
+.modal-overlay{position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); display:none; align-items:center; justify-content:center; z-index:1000; padding:20px;}
 .modal-overlay.active{display:flex;}
-.modal-card{background:var(--sur); width:100%; max-width:400px; border-radius:var(--rl); padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.2); max-height:90vh; overflow-y:auto;}
+.modal-card{background:var(--sur); width:100%; max-width:400px; border-radius:var(--rl); padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.3); max-height:90vh; overflow-y:auto; transition: 0.3s;}
 
 /* 穿搭與扭蛋 */
 .cal-wrapper{overflow-x:auto; padding-bottom:10px;}
@@ -73,7 +90,7 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
 .del-fav{position:absolute; top:-6px; right:-6px; background:var(--red); color:#fff; border:none; width:20px; height:20px; border-radius:50%; font-size:10px; cursor:pointer;}
 
 /* 旅行打包清單 */
-.pack-item{background:var(--sur); border-radius:var(--rl); padding:16px; margin-bottom:12px; box-shadow:var(--shadow); border-left:4px solid var(--blue);}
+.pack-item{background:var(--sur); border-radius:var(--rl); padding:16px; margin-bottom:12px; box-shadow:var(--shadow); border-left:4px solid var(--blue); transition: 0.3s;}
 .pack-day-row{background:var(--sur2); border-radius:12px; padding:12px; margin-top:12px;}
 .pack-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:8px; margin-top:12px;}
 .p-chk-img{width:100%; height:80px; object-fit:cover; border-radius:12px; border:3px solid transparent; transition:0.2s;}
@@ -85,20 +102,20 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
 .pack-luggage-item.is-packed .pack-check-icon{display:flex;}
 
 /* 按鈕與導覽列 */
-.btn{cursor:pointer; padding:12px; border-radius:99px; border:none; width:100%; font-family:inherit; font-size:14px; font-weight:700; margin-top:8px;}
+.btn{cursor:pointer; padding:12px; border-radius:99px; border:none; width:100%; font-family:inherit; font-size:14px; font-weight:700; margin-top:8px; transition:0.2s;}
 .btn-p{background:var(--accent); color:#fff;}
 .btn-sec{background:var(--sur2); color:var(--txt);}
 .btn-danger{background:none; color:var(--red); font-size:11px; padding:6px;}
 
-.bottom-nav{position:fixed; bottom:0; left:0; right:0; background:rgba(255,255,255,0.85); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); display:flex; justify-content:space-around; padding:10px 0 calc(10px + env(safe-area-inset-bottom)); box-shadow:0 -1px 0 rgba(0,0,0,0.05); z-index:100;}
+.bottom-nav{position:fixed; bottom:0; left:0; right:0; background:var(--nav-bg); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); display:flex; justify-content:space-around; padding:10px 0 calc(10px + env(safe-area-inset-bottom)); box-shadow:0 -1px 0 rgba(0,0,0,0.05); z-index:100; transition: background 0.3s;}
 .nav-item{display:flex; flex-direction:column; align-items:center; color:var(--mut); border:none; background:none; font-size:10px; font-weight:600; gap:4px; flex:1;}
-.nav-item.active{color:var(--accent);}
+.nav-item.active{color:var(--blue);} /* 點亮時改用亮藍色，深淺色都好看 */
 .icon{font-size:22px;}
 
-.toast{position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); background:var(--accent); color:#fff; padding:12px 24px; border-radius:99px; transition:0.4s; z-index:1100; font-weight:600; white-space:nowrap;}
+.toast{position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); background:var(--blue); color:#fff; padding:12px 24px; border-radius:99px; transition:0.4s; z-index:1100; font-weight:600; white-space:nowrap; box-shadow:0 10px 30px rgba(0,122,255,0.3);}
 .toast.show{transform:translateX(-50%) translateY(0)}
 
-.stat-box{background:var(--sur); padding:20px; border-radius:var(--rl); box-shadow:var(--shadow);}
+.stat-box{background:var(--sur); padding:20px; border-radius:var(--rl); box-shadow:var(--shadow); transition: 0.3s;}
 
 /* 載入畫面 */
 #loading-screen{position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column;}
@@ -108,13 +125,19 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
 <body>
 
 <div id="loading-screen">
-  <div style="font-size:40px; margin-bottom:15px; animation:bounce 1s infinite;">📦</div>
-  <div style="font-weight:800; font-size:18px;">正在連接大容量資料庫...</div>
-  <div style="font-size:12px; color:var(--mut); margin-top:8px;">如果是首次升級，可能會需要幾秒鐘幫資料搬家</div>
+  <div style="font-size:40px; margin-bottom:15px; animation:bounce 1s infinite;">✨</div>
+  <div style="font-weight:800; font-size:18px;">正在整理衣櫥...</div>
 </div>
 
 <div class="app" id="main-app">
-  <div class="hd"><span class="hd-t">Wardrobe <span style="font-size:12px; color:var(--blue);">v5.15 擴充版</span></span><span class="storage-txt" id="st-txt">計算中...</span></div>
+  
+  <div class="hd">
+    <span class="hd-t">Wardrobe <span style="font-size:12px; color:var(--blue);">v5.16</span></span>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span class="storage-txt" id="st-txt">計算中...</span>
+      <button class="theme-btn" id="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
 
   <div id="p-cat" class="panel active">
     <div class="zone" id="dz" onclick="document.getElementById('fi').click()">
@@ -126,33 +149,19 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
       <div id="batch-status" style="font-size:12px; font-weight:700; color:var(--blue); margin-bottom:12px; text-align:center;"></div>
       <div class="g2">
         <div class="fld"><span class="lbl">名稱</span><input type="text" id="ef-name" placeholder="例：黑色短踢"></div>
-        <div class="fld">
-          <span class="lbl">類型</span>
-          <select id="ef-type">
-            <option>上身</option><option>褲子</option><option>外套</option><option>鞋子</option><option>配件</option><option>襪子</option>
-          </select>
-        </div>
+        <div class="fld"><span class="lbl">類型</span><select id="ef-type"><option>上身</option><option>褲子</option><option>外套</option><option>鞋子</option><option>配件</option><option>襪子</option></select></div>
       </div>
       <div class="fld" style="margin-bottom:12px;">
         <span class="lbl">季節 (可複選)</span>
         <div class="chk-group" id="ef-season">
-          <label><input type="checkbox" value="春"> 春</label>
-          <label><input type="checkbox" value="夏"> 夏</label>
-          <label><input type="checkbox" value="秋"> 秋</label>
-          <label><input type="checkbox" value="冬"> 冬</label>
+          <label><input type="checkbox" value="春"> 春</label><label><input type="checkbox" value="夏"> 夏</label><label><input type="checkbox" value="秋"> 秋</label><label><input type="checkbox" value="冬"> 冬</label>
         </div>
       </div>
       <div class="g2">
-        <div class="fld">
-          <span class="lbl">尺寸</span>
-          <select id="ef-size">
-            <option value="未填">未填</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>F</option>
-          </select>
-        </div>
+        <div class="fld"><span class="lbl">尺寸</span><select id="ef-size"><option value="未填">未填</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>F</option></select></div>
         <div class="fld"><span class="lbl">顏色</span><input type="text" id="ef-color" placeholder="例：燕麥色"></div>
       </div>
       <div class="fld" style="margin-bottom:12px;"><span class="lbl">購入價格</span><input type="number" id="ef-price"></div>
-      
       <button class="btn btn-p" onclick="addItem()">完成建檔</button>
       <button class="btn btn-sec" onclick="skipItem()">跳過</button>
     </div>
@@ -160,13 +169,9 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
 
   <div id="p-war" class="panel">
     <div class="tool-bar">
-      <div class="search-box"><span>🔍</span><input type="text" id="search-input" placeholder="搜尋..." oninput="renderWar()"></div>
+      <div class="search-box"><span>🔍</span><input type="text" id="search-input" placeholder="搜尋名稱、類型、顏色..." oninput="renderWar()"></div>
       <select class="sort-sel" id="sort-order" onchange="renderWar()">
-        <option value="new">🆕 最新加入</option>
-        <option value="size_asc">📏 尺寸 (小➔大)</option>
-        <option value="cpw_high">💸 CPW 最高</option>
-        <option value="cpw_low">👑 CPW 最低</option>
-        <option value="wear_most">🔥 最常穿</option>
+        <option value="new">🆕 最新加入</option><option value="size_asc">📏 尺寸 (小➔大)</option><option value="cpw_high">💸 CPW 最高</option><option value="cpw_low">👑 CPW 最低</option><option value="wear_most">🔥 最常穿</option>
       </select>
     </div>
     <div class="grid" id="wgrid"></div>
@@ -175,7 +180,7 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
   <div id="p-ootd" class="panel">
     <div class="g2">
       <button class="btn btn-p" onclick="document.getElementById('ootd-cam').click()" style="margin:0;">📸 拍照</button>
-      <button class="btn btn-p" onclick="document.getElementById('ootd-file').click()" style="margin:0; background:var(--blue);">🖼️ 上傳照片</button>
+      <button class="btn btn-p" onclick="document.getElementById('ootd-file').click()" style="margin:0; background:var(--blue); color:#fff;">🖼️ 上傳照片</button>
     </div>
     <button class="btn btn-sec" onclick="openRoulette()" style="background:#FFF1E5; color:#FF9500; margin-top:12px;">🎲 穿搭扭蛋機</button>
     
@@ -191,8 +196,7 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <span style="font-weight:800; font-size:16px;">穿搭回顧</span>
         <select class="sort-sel" id="ootd-view-toggle" onchange="renderOotd()">
-          <option value="list">列表</option>
-          <option value="cal">月曆</option>
+          <option value="list">列表</option><option value="cal">月曆</option>
         </select>
       </div>
       <div id="cal-zoom-ctrl" style="display:none; align-items:center; gap:8px; margin-top:12px; background:var(--sur2); padding:8px 12px; border-radius:99px;">
@@ -215,8 +219,8 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
     </div>
     <div class="stat-box" style="margin-top:16px;"><span class="lbl">顏色足跡</span><div id="st-colors" style="margin-top:12px;"></div></div>
     
-    <div class="stat-box" style="margin-top:16px; background:#F8F9FA;">
-      <span class="lbl" style="color:var(--accent);">☁️ 安全與備份 (支援無容量限制版)</span>
+    <div class="stat-box" style="margin-top:16px;">
+      <span class="lbl" style="color:var(--blue);">☁️ 安全與備份</span>
       <button class="btn btn-sec" onclick="exportData()" style="margin-top:12px;">⬇️ 下載備份檔 (.json)</button>
       <button class="btn btn-sec" onclick="document.getElementById('import-fi').click()" style="margin-top:8px;">⬆️ 從備份檔還原</button>
       <input type="file" id="import-fi" accept=".json" style="display:none" onchange="importData(event)">
@@ -227,17 +231,11 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
 <div class="modal-overlay" id="roulette-modal">
   <div class="modal-card" style="text-align:center;">
     <h3 style="margin-bottom:8px;">🎲 穿搭靈感</h3>
-    
     <div style="margin-bottom: 15px; display: flex; justify-content: center; gap: 5px;">
-        <select id="r-season-filter" onchange="rollOutfit()" style="width: auto; padding: 5px 15px; border-radius: 20px; background: var(--sur2); font-weight: 700; border: none; outline: none;">
-            <option value="全部">🌈 全部季節</option>
-            <option value="春">🌸 春季</option>
-            <option value="夏">☀️ 夏季</option>
-            <option value="秋">🍂 秋季</option>
-            <option value="冬">❄️ 冬季</option>
+        <select id="r-season-filter" onchange="rollOutfit()" style="width: auto; padding: 5px 15px; border-radius: 20px; background: var(--sur2); font-weight: 700; border: none; outline: none; color:var(--txt);">
+            <option value="全部">🌈 全部</option><option value="春">🌸 春季</option><option value="夏">☀️ 夏季</option><option value="秋">🍂 秋季</option><option value="冬">❄️ 冬季</option>
         </select>
     </div>
-
     <div class="roulette-box" id="r-result"></div>
     <div class="g2" style="margin-top:16px;">
       <button class="btn btn-sec" onclick="saveFavOutfit()" style="color:var(--red); background:#FFF1F0; margin:0;">❤️ 收藏</button>
@@ -252,35 +250,20 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
     <h3 style="margin-bottom:16px;">編輯單品</h3>
     <div class="g2">
       <div class="fld"><span class="lbl">名稱</span><input type="text" id="ed-name"></div>
-      <div class="fld">
-        <span class="lbl">類型</span>
-        <select id="ed-type">
-          <option>上身</option><option>褲子</option><option>外套</option><option>鞋子</option><option>配件</option><option>襪子</option>
-        </select>
-      </div>
+      <div class="fld"><span class="lbl">類型</span><select id="ed-type"><option>上身</option><option>褲子</option><option>外套</option><option>鞋子</option><option>配件</option><option>襪子</option></select></div>
     </div>
     <div class="fld" style="margin-bottom:12px;">
       <span class="lbl">季節 (可複選)</span>
       <div class="chk-group" id="ed-season">
-        <label><input type="checkbox" value="春"> 春</label>
-        <label><input type="checkbox" value="夏"> 夏</label>
-        <label><input type="checkbox" value="秋"> 秋</label>
-        <label><input type="checkbox" value="冬"> 冬</label>
+        <label><input type="checkbox" value="春"> 春</label><label><input type="checkbox" value="夏"> 夏</label><label><input type="checkbox" value="秋"> 秋</label><label><input type="checkbox" value="冬"> 冬</label>
       </div>
     </div>
     <div class="g2">
-      <div class="fld">
-        <span class="lbl">尺寸</span>
-        <select id="ed-size">
-          <option value="未填">未填</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>F</option>
-        </select>
-      </div>
+      <div class="fld"><span class="lbl">尺寸</span><select id="ed-size"><option value="未填">未填</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>F</option></select></div>
       <div class="fld"><span class="lbl">顏色</span><input type="text" id="ed-color"></div>
     </div>
     <div class="fld"><span class="lbl">價格</span><input type="number" id="ed-price"></div>
-    
     <input type="hidden" id="ed-id">
-    
     <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
       <button class="btn btn-p" onclick="saveEdit()" style="margin:0;">儲存修改</button>
       <div class="g2" style="margin:0;">
@@ -313,71 +296,70 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--accent);}
 <div class="toast" id="toast"></div>
 
 <script>
-// --- 新型資料庫引擎 (IndexedDB) 與相容機制 ---
-const DB_NAME = 'WardrobeProDB';
-const STORE_NAME = 'AppState';
-let idb;
-let W=[], OOTD=[], PACK=[], FAV=[];
-let uploadQueue = [];
+// --- 主題切換邏輯 (Dark Mode) ---
+function initTheme() {
+  const savedTheme = localStorage.getItem('wardrobe_theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    document.body.classList.add('dark-mode');
+    document.getElementById('theme-toggle').textContent = '☀️';
+    document.getElementById('meta-theme-color').setAttribute("content", "#000000");
+  }
+}
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark-mode');
+  document.getElementById('theme-toggle').textContent = isDark ? '☀️' : '🌙';
+  document.getElementById('meta-theme-color').setAttribute("content", isDark ? "#000000" : "#F5F7FA");
+  localStorage.setItem('wardrobe_theme', isDark ? 'dark' : 'light');
+}
+initTheme(); // 載入時立即執行
+
+// --- 資料庫引擎 (IndexedDB) ---
+const DB_NAME = 'WardrobeProDB'; const STORE_NAME = 'AppState'; let idb;
+let W=[], OOTD=[], PACK=[], FAV=[]; let uploadQueue = [];
 const sizeOrder = { 'XS':1, 'S':2, 'M':3, 'L':4, 'XL':5, 'XXL':6, 'F':7, '未填':99 };
 
 function initDB() {
   return new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, 1);
-    req.onupgradeneeded = e => {
-      idb = e.target.result;
-      if (!idb.objectStoreNames.contains(STORE_NAME)) idb.createObjectStore(STORE_NAME);
-    };
-    req.onsuccess = e => { idb = e.target.result; resolve(); };
-    req.onerror = e => reject(e.target.error);
+    req.onupgradeneeded = e => { idb = e.target.result; if (!idb.objectStoreNames.contains(STORE_NAME)) idb.createObjectStore(STORE_NAME); };
+    req.onsuccess = e => { idb = e.target.result; resolve(); }; req.onerror = e => reject(e.target.error);
   });
 }
 function idbSet(key, val) {
   return new Promise((resolve, reject) => {
-    if(!idb) return reject("資料庫未連接");
-    const tx = idb.transaction(STORE_NAME, 'readwrite');
-    const req = tx.objectStore(STORE_NAME).put(val, key);
+    if(!idb) return reject("無資料庫");
+    const tx = idb.transaction(STORE_NAME, 'readwrite'); const req = tx.objectStore(STORE_NAME).put(val, key);
     req.onsuccess = () => resolve(); req.onerror = e => reject(e.target.error);
   });
 }
 function idbGet(key) {
   return new Promise((resolve, reject) => {
-    if(!idb) return reject("資料庫未連接");
-    const tx = idb.transaction(STORE_NAME, 'readonly');
-    const req = tx.objectStore(STORE_NAME).get(key);
+    if(!idb) return reject("無資料庫");
+    const tx = idb.transaction(STORE_NAME, 'readonly'); const req = tx.objectStore(STORE_NAME).get(key);
     req.onsuccess = e => resolve(e.target.result); req.onerror = e => reject(e.target.error);
   });
 }
 
-// --- 🚀 啟動與無痛搬家機制 (防卡死升級版) ---
+// 啟動邏輯
 window.onload = async () => {
   try {
-    await initDB(); // 嘗試開啟大容量資料庫
-    
-    // 嘗試從新引擎讀取，若無則從舊版 localStorage 讀取
-    W = (await idbGet('W')) || JSON.parse(localStorage.getItem('wv59') || localStorage.getItem('wv58') || '[]');
-    OOTD = (await idbGet('OOTD')) || JSON.parse(localStorage.getItem('wv59_ootd') || localStorage.getItem('wv58_ootd') || '[]');
-    PACK = (await idbGet('PACK')) || JSON.parse(localStorage.getItem('wv59_pack') || localStorage.getItem('wv58_pack') || '[]');
-    FAV = (await idbGet('FAV')) || JSON.parse(localStorage.getItem('wv59_fav') || localStorage.getItem('wv58_fav') || '[]');
+    await initDB();
+    W = (await idbGet('W')) || JSON.parse(localStorage.getItem('wv59') || '[]');
+    OOTD = (await idbGet('OOTD')) || JSON.parse(localStorage.getItem('wv59_ootd') || '[]');
+    PACK = (await idbGet('PACK')) || JSON.parse(localStorage.getItem('wv59_pack') || '[]');
+    FAV = (await idbGet('FAV')) || JSON.parse(localStorage.getItem('wv59_fav') || '[]');
 
-    // 搬家邏輯：如果發現舊資料，立刻儲存到新引擎，並清除舊資料釋放空間！
-    if (localStorage.getItem('wv59') || localStorage.getItem('wv58')) {
+    if (localStorage.getItem('wv59')) {
         await saveAll();
         localStorage.removeItem('wv59'); localStorage.removeItem('wv59_ootd'); localStorage.removeItem('wv59_pack'); localStorage.removeItem('wv59_fav');
-        localStorage.removeItem('wv58'); localStorage.removeItem('wv58_ootd'); localStorage.removeItem('wv58_pack'); localStorage.removeItem('wv58_fav');
-        setTimeout(()=>toast('🎉 資料已成功無痛升級至大容量資料庫！'), 500);
     }
   } catch (err) {
-    // 🛡️ 防禦機制：如果遇到 Colab 或無痕模式封鎖資料庫，啟動備用方案！
-    console.warn("無法啟動大容量資料庫，退回安全模式：", err);
-    toast('⚠️ 瀏覽器安全限制，已退回基礎模式運行');
-    
-    W = JSON.parse(localStorage.getItem('wv59') || '[]');
-    OOTD = JSON.parse(localStorage.getItem('wv59_ootd') || '[]');
-    PACK = JSON.parse(localStorage.getItem('wv59_pack') || '[]');
-    FAV = JSON.parse(localStorage.getItem('wv59_fav') || '[]');
+    console.warn("退回安全模式", err);
+    W = JSON.parse(localStorage.getItem('wv59') || '[]'); OOTD = JSON.parse(localStorage.getItem('wv59_ootd') || '[]');
+    PACK = JSON.parse(localStorage.getItem('wv59_pack') || '[]'); FAV = JSON.parse(localStorage.getItem('wv59_fav') || '[]');
   } finally {
-    // 🚨 無論成功或失敗，都強制關閉載入畫面，顯示主程式！
     document.getElementById('loading-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'block';
     updateSt(); go('cat');
@@ -386,7 +368,7 @@ window.onload = async () => {
 
 function cpw(i) { return Math.round(i.price / ((i.wears || []).length || 1)); }
 
-// --- 1. 批量建檔 ---
+// --- 以下為核心邏輯 (與v5.15相同) ---
 async function onFile(e){
   const files = e.target.files; if(!files.length) return; toast('照片處理中...');
   for(let f of files){
@@ -397,13 +379,10 @@ async function onFile(e){
       c.width=400; c.height=(img.height/img.width)*400; ctx.drawImage(img,0,0,c.width,c.height);
       uploadQueue.push(c.toDataURL('image/jpeg',0.7)); r();
     };});
-  }
-  processQueue();
+  } processQueue();
 }
 function processQueue(){
-  if(!uploadQueue.length){
-    document.getElementById('step2').style.display='none'; document.getElementById('dz').style.display='block'; return;
-  }
+  if(!uploadQueue.length){ document.getElementById('step2').style.display='none'; document.getElementById('dz').style.display='block'; return; }
   document.getElementById('dz').style.display='none'; window.lastB64 = uploadQueue[0];
   document.getElementById('ef-name').value=''; document.getElementById('ef-color').value=''; document.getElementById('ef-price').value=''; document.getElementById('ef-size').value='未填';
   document.querySelectorAll('#ef-season input').forEach(el=>el.checked=false);
@@ -417,96 +396,39 @@ async function addItem(){
 }
 function skipItem(){ uploadQueue.shift(); processQueue(); }
 
-// --- 2. 衣櫥與排序 ---
 function renderWar(){
-  const g = document.getElementById('wgrid');
-  const q = document.getElementById('search-input').value.toLowerCase();
-  const sort = document.getElementById('sort-order').value;
+  const g = document.getElementById('wgrid'); const q = document.getElementById('search-input').value.toLowerCase(); const sort = document.getElementById('sort-order').value;
   let list = W.filter(i=> i.name.toLowerCase().includes(q) || i.type.toLowerCase().includes(q) || (i.color||'').toLowerCase().includes(q) || (i.season||'').includes(q));
-  
-  if(sort === 'cpw_high') list.sort((a,b)=> cpw(b) - cpw(a));
-  else if(sort === 'cpw_low') list.sort((a,b)=> cpw(a) - cpw(b));
-  else if(sort === 'wear_most') list.sort((a,b)=> (b.wears||[]).length - (a.wears||[]).length);
-  else if(sort === 'size_asc') list.sort((a,b)=> (sizeOrder[a.size]||99) - (sizeOrder[b.size]||99));
-  else list.sort((a,b)=> b.id - a.id);
-  
-  g.innerHTML = list.map(i=>`
-    <div class="card">
-      <button class="btn-edit-float" onclick="openEdit(${i.id})">✎</button>
-      <img src="${i.image}" class="cimg">
-      <div class="cbody">
-        <div class="c-name">${i.name}</div>
-        <div style="margin-bottom:4px;">
-          <span class="tag">Size: ${i.size || '未填'}</span>
-          <span class="tag" style="background:${getColorCode(i.color)}20; color:${getColorCode(i.color)};">${i.color}</span>
-        </div>
-        ${i.season ? `<div style="font-size:10px; color:var(--mut); margin-bottom:4px;">🍂 ${i.season}</div>` : ''}
-        <button class="btn btn-sm btn-p" style="margin-top:auto; padding:6px;" onclick="logW(${i.id})">打卡 (${(i.wears||[]).length})</button>
-      </div>
-    </div>
-  `).join('');
+  if(sort === 'cpw_high') list.sort((a,b)=> cpw(b) - cpw(a)); else if(sort === 'cpw_low') list.sort((a,b)=> cpw(a) - cpw(b)); else if(sort === 'wear_most') list.sort((a,b)=> (b.wears||[]).length - (a.wears||[]).length); else if(sort === 'size_asc') list.sort((a,b)=> (sizeOrder[a.size]||99) - (sizeOrder[b.size]||99)); else list.sort((a,b)=> b.id - a.id);
+  g.innerHTML = list.map(i=>`<div class="card"><button class="btn-edit-float" onclick="openEdit(${i.id})">✎</button><img src="${i.image}" class="cimg"><div class="cbody"><div class="c-name">${i.name}</div><div style="margin-bottom:4px;"><span class="tag">Size: ${i.size || '未填'}</span><span class="tag" style="background:${getColorCode(i.color)}20; color:${getColorCode(i.color)};">${i.color}</span></div>${i.season ? `<div style="font-size:10px; color:var(--mut); margin-bottom:4px;">🍂 ${i.season}</div>` : ''}<button class="btn btn-sm btn-p" style="margin-top:auto; padding:6px;" onclick="logW(${i.id})">打卡 (${(i.wears||[]).length})</button></div></div>`).join('');
 }
 
 function openEdit(id) {
   const i = W.find(x => x.id === id); if(!i) return;
-  document.getElementById('ed-id').value = i.id; document.getElementById('ed-name').value = i.name;
-  document.getElementById('ed-type').value = i.type; document.querySelectorAll('#ed-season input').forEach(el => el.checked = (i.season||'').includes(el.value));
-  document.getElementById('ed-color').value = i.color; document.getElementById('ed-size').value = i.size || '未填'; document.getElementById('ed-price').value = i.price;
+  document.getElementById('ed-id').value = i.id; document.getElementById('ed-name').value = i.name; document.getElementById('ed-type').value = i.type; document.querySelectorAll('#ed-season input').forEach(el => el.checked = (i.season||'').includes(el.value)); document.getElementById('ed-color').value = i.color; document.getElementById('ed-size').value = i.size || '未填'; document.getElementById('ed-price').value = i.price;
   document.getElementById('edit-modal').classList.add('active');
 }
 async function saveEdit() {
   const i = W.find(x => x.id === parseInt(document.getElementById('ed-id').value));
-  if(i) {
-    i.name = document.getElementById('ed-name').value || '未命名'; i.type = document.getElementById('ed-type').value;
-    i.season = Array.from(document.querySelectorAll('#ed-season input:checked')).map(el=>el.value).join(', ');
-    i.color = document.getElementById('ed-color').value || '未填'; i.size = document.getElementById('ed-size').value; i.price = parseFloat(document.getElementById('ed-price').value) || 0;
-    await saveAll(); renderWar(); document.getElementById('edit-modal').classList.remove('active'); toast('修改已儲存');
-  }
+  if(i) { i.name = document.getElementById('ed-name').value || '未命名'; i.type = document.getElementById('ed-type').value; i.season = Array.from(document.querySelectorAll('#ed-season input:checked')).map(el=>el.value).join(', '); i.color = document.getElementById('ed-color').value || '未填'; i.size = document.getElementById('ed-size').value; i.price = parseFloat(document.getElementById('ed-price').value) || 0; await saveAll(); renderWar(); document.getElementById('edit-modal').classList.remove('active'); toast('修改已儲存'); }
 }
-async function deleteItem() {
-  if(confirm('確定要永久刪除這件單品嗎？')) {
-    W = W.filter(x => x.id !== parseInt(document.getElementById('ed-id').value));
-    await saveAll(); renderWar(); document.getElementById('edit-modal').classList.remove('active'); toast('單品已刪除');
-  }
-}
+async function deleteItem() { if(confirm('確定要刪除這件單品嗎？')) { W = W.filter(x => x.id !== parseInt(document.getElementById('ed-id').value)); await saveAll(); renderWar(); document.getElementById('edit-modal').classList.remove('active'); toast('已刪除'); } }
 
-// --- 3. 穿搭與扭蛋機 ---
 let currentRoll = { top: null, bot: null, shoe: null };
 function openRoulette() { document.getElementById('roulette-modal').classList.add('active'); rollOutfit(); }
 function rollOutfit() {
   const targetSeason = document.getElementById('r-season-filter').value;
   const filterBySeason = (items) => targetSeason === '全部' ? items : items.filter(i => (i.season || '').includes(targetSeason));
-
   const tops = filterBySeason(W.filter(x=>x.type==='上身')); const bots = filterBySeason(W.filter(x=>x.type==='褲子')); const shoes = filterBySeason(W.filter(x=>x.type==='鞋子'));
   const res = document.getElementById('r-result');
-  if(!tops.length || !bots.length) { 
-    res.innerHTML = `<p style="color:var(--red); font-size:12px; padding: 20px;">${targetSeason !== '全部' ? targetSeason+'季的' : ''}上身或褲子數量不足，無法抽籤！</p>`; 
-    currentRoll = { top: null, bot: null, shoe: null }; return; 
-  }
-  
-  currentRoll.top = tops[Math.floor(Math.random()*tops.length)]; currentRoll.bot = bots[Math.floor(Math.random()*bots.length)];
-  currentRoll.shoe = shoes.length ? shoes[Math.floor(Math.random()*shoes.length)] : null;
-  
-  let html = `<img src="${currentRoll.top.image}" class="r-img" title="上身"><img src="${currentRoll.bot.image}" class="r-img" title="褲子">`;
-  if (currentRoll.shoe) html += `<img src="${currentRoll.shoe.image}" class="r-img" title="鞋子">`;
-  res.innerHTML = html;
+  if(!tops.length || !bots.length) { res.innerHTML = `<p style="color:var(--red); font-size:12px; padding: 20px;">該季節衣服不足，無法抽籤！</p>`; currentRoll = { top: null, bot: null, shoe: null }; return; }
+  currentRoll.top = tops[Math.floor(Math.random()*tops.length)]; currentRoll.bot = bots[Math.floor(Math.random()*bots.length)]; currentRoll.shoe = shoes.length ? shoes[Math.floor(Math.random()*shoes.length)] : null;
+  let html = `<img src="${currentRoll.top.image}" class="r-img"><img src="${currentRoll.bot.image}" class="r-img">`; if (currentRoll.shoe) html += `<img src="${currentRoll.shoe.image}" class="r-img">`; res.innerHTML = html;
 }
-
-async function saveFavOutfit() {
-  if(!currentRoll.top || !currentRoll.bot) return;
-  FAV.unshift({ id: Date.now(), top: currentRoll.top.id, bot: currentRoll.bot.id, shoe: currentRoll.shoe ? currentRoll.shoe.id : null });
-  await saveAll(); renderFavs(); toast('❤️ 已加入靈感庫！');
-}
-
+async function saveFavOutfit() { if(!currentRoll.top || !currentRoll.bot) return; FAV.unshift({ id: Date.now(), top: currentRoll.top.id, bot: currentRoll.bot.id, shoe: currentRoll.shoe ? currentRoll.shoe.id : null }); await saveAll(); renderFavs(); toast('❤️ 已加入靈感庫！'); }
 function renderFavs() {
-  const fl = document.getElementById('fav-list');
-  if(!FAV.length) { fl.innerHTML = '<p style="font-size:12px; color:var(--mut);">去扭蛋機抽籤並點擊愛心收藏吧！</p>'; return; }
-  fl.innerHTML = '<div class="fav-strip">' + FAV.map(f => {
-    const t = W.find(x=>x.id===f.top); const b = W.find(x=>x.id===f.bot); const s = f.shoe ? W.find(x=>x.id===f.shoe) : null;
-    if(!t || !b) return '';
-    let html = `<div class="fav-item"><button class="del-fav" onclick="delFav(${f.id})">✕</button><img src="${t.image}" class="fav-img"><img src="${b.image}" class="fav-img">`;
-    if(s) html += `<img src="${s.image}" class="fav-img">`; html += `</div>`; return html;
-  }).join('') + '</div>';
+  const fl = document.getElementById('fav-list'); if(!FAV.length) { fl.innerHTML = '<p style="font-size:12px; color:var(--mut);">去扭蛋機收藏吧！</p>'; return; }
+  fl.innerHTML = '<div class="fav-strip">' + FAV.map(f => { const t = W.find(x=>x.id===f.top); const b = W.find(x=>x.id===f.bot); const s = f.shoe ? W.find(x=>x.id===f.shoe) : null; if(!t || !b) return ''; let html = `<div class="fav-item"><button class="del-fav" onclick="delFav(${f.id})">✕</button><img src="${t.image}" class="fav-img"><img src="${b.image}" class="fav-img">`; if(s) html += `<img src="${s.image}" class="fav-img">`; html += `</div>`; return html; }).join('') + '</div>';
 }
 async function delFav(id) { FAV = FAV.filter(x=>x.id!==id); await saveAll(); renderFavs(); }
 
@@ -514,176 +436,43 @@ async function onOotdFile(e) {
   const f = e.target.files[0]; if(!f) return; toast('處理中...');
   const b64 = await new Promise(r=>{const rd=new FileReader(); rd.onload=ev=>r(ev.target.result); rd.readAsDataURL(f);});
   const img = new Image(); img.src = b64;
-  await new Promise(r=>{ img.onload=async ()=>{
-    const c=document.createElement('canvas'); const ctx=c.getContext('2d');
-    c.width = 600; c.height = 600 * (img.height/img.width); ctx.drawImage(img,0,0,c.width,c.height);
-    const note = prompt('為這套穿搭寫點筆記吧？(可留空)');
-    if (note !== null) {
-       OOTD.unshift({ id: Date.now(), date: new Date().toLocaleDateString('zh-TW'), note: note, image: c.toDataURL('image/jpeg', 0.72) });
-       await saveAll(); renderOotd(); toast('穿搭已保存！');
-    }
-    e.target.value = ''; r();
-  };});
+  await new Promise(r=>{ img.onload=async ()=>{ const c=document.createElement('canvas'); const ctx=c.getContext('2d'); c.width = 600; c.height = 600 * (img.height/img.width); ctx.drawImage(img,0,0,c.width,c.height); const note = prompt('寫點筆記？(可留空)'); if (note !== null) { OOTD.unshift({ id: Date.now(), date: new Date().toLocaleDateString('zh-TW'), note: note, image: c.toDataURL('image/jpeg', 0.72) }); await saveAll(); renderOotd(); toast('已保存！'); } e.target.value = ''; r(); };});
 }
 function renderOotd() {
-  renderFavs();
-  const mode = document.getElementById('ootd-view-toggle').value;
-  const c = document.getElementById('ootd-content');
-  const zctrl = document.getElementById('cal-zoom-ctrl');
-  
-  if(!OOTD.length) { c.innerHTML = '<p style="text-align:center; color:var(--mut);">還沒有穿搭紀錄喔！</p>'; zctrl.style.display='none'; return; }
-  
-  if(mode === 'list') {
-    zctrl.style.display = 'none'; document.documentElement.style.setProperty('--cal-cell-size', '1fr');
-    c.innerHTML = '<div style="display:grid; gap:16px;">' + OOTD.map(o => `
-      <div class="card" style="padding-bottom:0;">
-        <img src="${o.image}" style="width:100%; max-height:450px; object-fit:cover;">
-        <div style="padding:16px; display:flex; justify-content:space-between; align-items:center;">
-          <div><div style="font-weight:800;">${o.date}</div><div style="font-size:12px; color:var(--mut);">${o.note||''}</div></div>
-          <button class="btn-danger" style="margin:0; background:#FFF1F0; padding:6px 12px; border-radius:8px;" onclick="delOotd(${o.id})">刪除</button>
-        </div>
-      </div>`).join('') + '</div>';
-  } else {
-    zctrl.style.display = 'flex';
-    const today = new Date(); const daysInMonth = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate();
-    let calHTML = '<div class="cal-wrapper"><div class="cal-grid">';
-    for(let d=1; d<=daysInMonth; d++) {
-      const dateStr = new Date(today.getFullYear(), today.getMonth(), d).toLocaleDateString('zh-TW');
-      const ootdToday = OOTD.find(o => o.date === dateStr);
-      if(ootdToday) calHTML += `<div class="cal-day has-ootd" style="background-image:url(${ootdToday.image})" onclick="alert('${dateStr}\\n${ootdToday.note||'無筆記'}')">${d}</div>`;
-      else calHTML += `<div class="cal-day">${d}</div>`;
-    }
-    c.innerHTML = calHTML + '</div></div><p style="text-align:center; font-size:11px; margin-top:8px; color:var(--mut);">點擊圖片可查看，拉動上方滑桿可放大</p>';
-  }
+  renderFavs(); const mode = document.getElementById('ootd-view-toggle').value; const c = document.getElementById('ootd-content'); const zctrl = document.getElementById('cal-zoom-ctrl');
+  if(!OOTD.length) { c.innerHTML = '<p style="text-align:center; color:var(--mut);">還沒有紀錄喔！</p>'; zctrl.style.display='none'; return; }
+  if(mode === 'list') { zctrl.style.display = 'none'; document.documentElement.style.setProperty('--cal-cell-size', '1fr'); c.innerHTML = '<div style="display:grid; gap:16px;">' + OOTD.map(o => `<div class="card" style="padding-bottom:0;"><img src="${o.image}" style="width:100%; max-height:450px; object-fit:cover;"><div style="padding:16px; display:flex; justify-content:space-between; align-items:center;"><div><div style="font-weight:800;">${o.date}</div><div style="font-size:12px; color:var(--mut);">${o.note||''}</div></div><button class="btn-danger" style="margin:0; background:#FFF1F0; padding:6px 12px; border-radius:8px;" onclick="delOotd(${o.id})">刪除</button></div></div>`).join('') + '</div>';
+  } else { zctrl.style.display = 'flex'; const today = new Date(); const daysInMonth = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate(); let calHTML = '<div class="cal-wrapper"><div class="cal-grid">'; for(let d=1; d<=daysInMonth; d++) { const dateStr = new Date(today.getFullYear(), today.getMonth(), d).toLocaleDateString('zh-TW'); const ootdToday = OOTD.find(o => o.date === dateStr); if(ootdToday) calHTML += `<div class="cal-day has-ootd" style="background-image:url(${ootdToday.image})" onclick="alert('${dateStr}\\n${ootdToday.note||'無筆記'}')">${d}</div>`; else calHTML += `<div class="cal-day">${d}</div>`; } c.innerHTML = calHTML + '</div></div>'; }
 }
 async function delOotd(id) { if(confirm('確定刪除？')) { OOTD = OOTD.filter(x => x.id !== id); await saveAll(); renderOotd(); } }
 
-// --- 4. 旅行打包 ---
-async function createPack() {
-  const name = prompt('請輸入旅行名稱 (例如：日本五天四夜)'); if(!name) return;
-  const days = parseInt(prompt('請問這趟旅行有幾天？ (請輸入數字)', '3')); if(!days || days <= 0) return;
-  let plan = {}; for(let d=1; d<=days; d++) plan[d] = [];
-  PACK.unshift({ id: Date.now(), name: name, days: days, plan: plan, weather: {}, packed: [] }); 
-  await saveAll(); renderPack();
-}
-
+async function createPack() { const name = prompt('旅行名稱？'); if(!name) return; const days = parseInt(prompt('天數？', '3')); if(!days || days <= 0) return; let plan = {}; for(let d=1; d<=days; d++) plan[d] = []; PACK.unshift({ id: Date.now(), name: name, days: days, plan: plan, weather: {}, packed: [] }); await saveAll(); renderPack(); }
 function renderPack() {
-  const list = document.getElementById('pack-list');
-  if(!PACK.length) { list.innerHTML = '<p style="text-align:center; color:var(--mut); padding:2rem;">還沒有旅行計畫，立刻新增一個吧！</p>'; return; }
-  list.innerHTML = PACK.map(p => {
-    let daysHtml = '';
-    for(let d=1; d<=p.days; d++) {
-      const dayItems = W.filter(w => (p.plan[d]||[]).includes(w.id));
-      daysHtml += `
-        <div class="pack-day-row">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <span style="font-weight:800; font-size:14px;">第 ${d} 天穿搭</span>
-            <button onclick="openPackDay(${p.id}, ${d})" style="background:none; border:none; color:var(--blue); font-weight:700; cursor:pointer;">✎ 挑選</button>
-          </div>
-          <input type="text" style="padding:6px 10px; font-size:12px; margin-bottom:10px;" placeholder="輸入當天天氣 (例如：20°C 陰天)" value="${(p.weather||{})[d]||''}" onchange="updateWeather(${p.id}, ${d}, this.value)">
-          <div style="font-size:11px; color:var(--mut); margin-bottom:6px;">點擊圖片標記「已裝入行李」👇</div>
-          <div style="display:flex; gap:8px; overflow-x:auto;">
-            ${dayItems.length ? dayItems.map(i=>`
-              <div class="pack-luggage-item ${(p.packed||[]).includes(i.id) ? 'is-packed' : ''}" onclick="togglePackItem(${p.id}, ${i.id})">
-                <img src="${i.image}" class="pack-luggage-img"><div class="pack-check-icon">✅</div>
-              </div>`).join('') : '<span style="font-size:12px; color:var(--mut);">尚無安排</span>'}
-          </div>
-        </div>`;
-    }
-    return `<div class="pack-item"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><h4 style="font-weight:800; font-size:18px;">${p.name}</h4><button class="btn-danger" style="margin:0; background:#FFF1F0; border-radius:8px;" onclick="delPack(${p.id})">刪除計畫</button></div>${daysHtml}</div>`;
-  }).join('');
+  const list = document.getElementById('pack-list'); if(!PACK.length) { list.innerHTML = '<p style="text-align:center; color:var(--mut); padding:2rem;">無計畫</p>'; return; }
+  list.innerHTML = PACK.map(p => { let daysHtml = ''; for(let d=1; d<=p.days; d++) { const dayItems = W.filter(w => (p.plan[d]||[]).includes(w.id)); daysHtml += `<div class="pack-day-row"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span style="font-weight:800; font-size:14px;">第 ${d} 天</span><button onclick="openPackDay(${p.id}, ${d})" style="background:none; border:none; color:var(--blue); font-weight:700; cursor:pointer;">✎ 挑選</button></div><input type="text" style="padding:6px 10px; font-size:12px; margin-bottom:10px;" placeholder="天氣 (如：20°C)" value="${(p.weather||{})[d]||''}" onchange="updateWeather(${p.id}, ${d}, this.value)"><div style="display:flex; gap:8px; overflow-x:auto;">${dayItems.length ? dayItems.map(i=>`<div class="pack-luggage-item ${(p.packed||[]).includes(i.id) ? 'is-packed' : ''}" onclick="togglePackItem(${p.id}, ${i.id})"><img src="${i.image}" class="pack-luggage-img"><div class="pack-check-icon">✅</div></div>`).join('') : '<span style="font-size:12px; color:var(--mut);">無</span>'}</div></div>`; } return `<div class="pack-item"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><h4 style="font-weight:800; font-size:18px;">${p.name}</h4><button class="btn-danger" style="margin:0; background:#FFF1F0; border-radius:8px;" onclick="delPack(${p.id})">刪除</button></div>${daysHtml}</div>`; }).join('');
 }
-
 async function updateWeather(pid, day, val) { let p = PACK.find(x => x.id === pid); if(p) { if(!p.weather) p.weather = {}; p.weather[day] = val; await saveAll(); } }
-async function togglePackItem(pid, iid) {
-  let p = PACK.find(x => x.id === pid); if(!p) return;
-  if(!p.packed) p.packed = [];
-  if(p.packed.includes(iid)) p.packed = p.packed.filter(x => x !== iid); else p.packed.push(iid);
-  await saveAll(); renderPack();
-}
-function openPackDay(id, day) {
-  const p = PACK.find(x=>x.id===id); if(!p) return;
-  document.getElementById('pack-id').value = p.id; document.getElementById('pack-day').value = day;
-  document.getElementById('pack-title').textContent = `為「${p.name}」- 第 ${day} 天挑選`;
-  const selectedItems = p.plan[day] || [];
-  document.getElementById('pack-selector').innerHTML = W.map(i=>`<img src="${i.image}" class="p-chk-img ${selectedItems.includes(i.id)?'selected':''}" onclick="this.classList.toggle('selected'); this.dataset.id=${i.id}" data-id="${i.id}">`).join('');
-  document.getElementById('pack-modal').classList.add('active');
-}
-async function savePackSelection() {
-  const pid = parseInt(document.getElementById('pack-id').value); const day = parseInt(document.getElementById('pack-day').value);
-  const p = PACK.find(x=>x.id===pid);
-  if(p) { if(!p.plan) p.plan = {}; p.plan[day] = Array.from(document.querySelectorAll('.p-chk-img.selected')).map(el => parseInt(el.dataset.id)); await saveAll(); renderPack(); document.getElementById('pack-modal').classList.remove('active'); }
-}
-async function delPack(id) { if(confirm('確定刪除此旅行計畫？')) { PACK = PACK.filter(x=>x.id!==id); await saveAll(); renderPack(); } }
+async function togglePackItem(pid, iid) { let p = PACK.find(x => x.id === pid); if(!p) return; if(!p.packed) p.packed = []; if(p.packed.includes(iid)) p.packed = p.packed.filter(x => x !== iid); else p.packed.push(iid); await saveAll(); renderPack(); }
+function openPackDay(id, day) { const p = PACK.find(x=>x.id===id); if(!p) return; document.getElementById('pack-id').value = p.id; document.getElementById('pack-day').value = day; document.getElementById('pack-title').textContent = `為「${p.name}」- 第 ${day} 天挑選`; const selectedItems = p.plan[day] || []; document.getElementById('pack-selector').innerHTML = W.map(i=>`<img src="${i.image}" class="p-chk-img ${selectedItems.includes(i.id)?'selected':''}" onclick="this.classList.toggle('selected'); this.dataset.id=${i.id}" data-id="${i.id}">`).join(''); document.getElementById('pack-modal').classList.add('active'); }
+async function savePackSelection() { const pid = parseInt(document.getElementById('pack-id').value); const day = parseInt(document.getElementById('pack-day').value); const p = PACK.find(x=>x.id===pid); if(p) { if(!p.plan) p.plan = {}; p.plan[day] = Array.from(document.querySelectorAll('.p-chk-img.selected')).map(el => parseInt(el.dataset.id)); await saveAll(); renderPack(); document.getElementById('pack-modal').classList.remove('active'); } }
+async function delPack(id) { if(confirm('確定刪除？')) { PACK = PACK.filter(x=>x.id!==id); await saveAll(); renderPack(); } }
 
-// --- 5. 看板與備份 ---
 function renderIns() {
-  document.getElementById('st-total').textContent = '$'+ W.reduce((a,b)=>a+b.price,0).toLocaleString();
-  document.getElementById('st-cpw').textContent = '$'+ (W.length ? Math.round(W.reduce((a,b)=>a+cpw(b),0)/W.length) : 0).toLocaleString();
+  document.getElementById('st-total').textContent = '$'+ W.reduce((a,b)=>a+b.price,0).toLocaleString(); document.getElementById('st-cpw').textContent = '$'+ (W.length ? Math.round(W.reduce((a,b)=>a+cpw(b),0)/W.length) : 0).toLocaleString();
   const colors = {}; W.forEach(i=>colors[i.color]=(colors[i.color]||0)+1);
-  document.getElementById('st-colors').innerHTML = Object.entries(colors).map(([c,n])=>`
-    <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-weight:600; font-size:14px; align-items:center;">
-      <span style="display:flex; align-items:center;"><span style="display:inline-block; width:14px; height:14px; border-radius:50%; margin-right:10px; background:${getColorCode(c)}; border:1px solid rgba(0,0,0,0.1);"></span>${c}</span>
-      <span>${Math.round(n/W.length*100)}%</span>
-    </div>
-  `).join('');
+  document.getElementById('st-colors').innerHTML = Object.entries(colors).map(([c,n])=>`<div style="display:flex; justify-content:space-between; margin-bottom:12px; font-weight:600; font-size:14px; align-items:center;"><span style="display:flex; align-items:center;"><span style="display:inline-block; width:14px; height:14px; border-radius:50%; margin-right:10px; background:${getColorCode(c)}; border:1px solid rgba(0,0,0,0.1);"></span>${c}</span><span>${Math.round(n/W.length*100)}%</span></div>`).join('');
 }
-function exportData() {
-  toast('產生備份檔中，請稍候...');
-  setTimeout(() => {
-    const data = JSON.stringify({ W: W, OOTD: OOTD, PACK: PACK, FAV: FAV });
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob); const a = document.createElement('a');
-    a.href = url; a.download = `Wardrobe_v5.15_Pro_${new Date().toLocaleDateString('zh-TW').replace(/\//g,'')}.json`;
-    a.click(); URL.revokeObjectURL(url); toast('✅ 已下載備份檔！');
-  }, 500);
-}
-function importData(e) {
-  const f = e.target.files[0]; if(!f) return; const reader = new FileReader();
-  reader.onload = async (ev) => {
-    try {
-      const parsed = JSON.parse(ev.target.result);
-      if(parsed.W) {
-        if(confirm('警告：還原備份將會覆蓋目前的衣櫥，確定繼續？')) {
-          document.getElementById('loading-screen').style.display = 'flex'; // 顯示讀取中
-          W = parsed.W; OOTD = parsed.OOTD || []; PACK = parsed.PACK || []; FAV = parsed.FAV || [];
-          await saveAll(); toast('還原成功！即將重新載入'); setTimeout(()=>location.reload(), 1500);
-        }
-      } else alert('無效的備份檔！');
-    } catch(err) { alert('檔案讀取失敗！'); }
-  };
-  reader.readAsText(f);
-}
+function exportData() { toast('備份中...'); setTimeout(() => { const data = JSON.stringify({ W: W, OOTD: OOTD, PACK: PACK, FAV: FAV }); const blob = new Blob([data], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `Wardrobe_Backup.json`; a.click(); URL.revokeObjectURL(url); toast('✅ 已下載'); }, 500); }
+function importData(e) { const f = e.target.files[0]; if(!f) return; const reader = new FileReader(); reader.onload = async (ev) => { try { const parsed = JSON.parse(ev.target.result); if(parsed.W) { if(confirm('警告：將覆蓋目前衣櫥，確定？')) { document.getElementById('loading-screen').style.display = 'flex'; W = parsed.W; OOTD = parsed.OOTD || []; PACK = parsed.PACK || []; FAV = parsed.FAV || []; await saveAll(); toast('還原成功！'); setTimeout(()=>location.reload(), 1500); } } } catch(err) { alert('失敗！'); } }; reader.readAsText(f); }
 
-// --- 系統共用 ---
 function getColorCode(cn) {
-  if(!cn) return '#ddd';
-  const defaults = {'白':'#F2F2F7','黑':'#1C1C1E','灰':'#8E8E93','藍':'#007AFF','米':'#D2B48C','卡其':'#C3B091','紅':'#FF3B30','綠':'#34C759','黃':'#FFCC00','粉':'#FF2D55'};
-  for(let k in defaults) if(cn.includes(k)) return defaults[k];
-  let h=0; for(let i=0; i<cn.length; i++) h=cn.charCodeAt(i)+((h<<5)-h); return `hsl(${Math.abs(h)%360},65%,60%)`;
+  if(!cn) return '#ddd'; const defaults = {'白':'#F2F2F7','黑':'#1C1C1E','灰':'#8E8E93','藍':'#007AFF','米':'#D2B48C','卡其':'#C3B091','紅':'#FF3B30','綠':'#34C759','黃':'#FFCC00','粉':'#FF2D55'};
+  for(let k in defaults) if(cn.includes(k)) return defaults[k]; let h=0; for(let i=0; i<cn.length; i++) h=cn.charCodeAt(i)+((h<<5)-h); return `hsl(${Math.abs(h)%360},65%,60%)`;
 }
-async function logW(id){ const i=W.find(x=>x.id===id); i.wears.unshift({d:Date.now()}); await saveAll(); renderWar(); toast('單品打卡 +1'); }
-async function saveAll(){ 
-  try {
-    await idbSet('W',W); await idbSet('OOTD',OOTD); await idbSet('PACK',PACK); await idbSet('FAV',FAV); 
-  } catch(err) {
-    // 🛡️ 防禦機制：如果大容量資料庫寫入失敗，退回 LocalStorage 存檔
-    localStorage.setItem('wv59',JSON.stringify(W));
-    localStorage.setItem('wv59_ootd',JSON.stringify(OOTD));
-    localStorage.setItem('wv59_pack',JSON.stringify(PACK));
-    localStorage.setItem('wv59_fav',JSON.stringify(FAV));
-  }
-  updateSt(); 
-}
+async function logW(id){ const i=W.find(x=>x.id===id); i.wears.unshift({d:Date.now()}); await saveAll(); renderWar(); toast('打卡 +1'); }
+async function saveAll(){ try { await idbSet('W',W); await idbSet('OOTD',OOTD); await idbSet('PACK',PACK); await idbSet('FAV',FAV); } catch(err) { localStorage.setItem('wv59',JSON.stringify(W)); } updateSt(); }
 function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
-function go(n){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.getElementById('p-'+n).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(t=>t.classList.toggle('active', t.getAttribute('onclick').includes(n)));
-  window.scrollTo(0,0);
-  if(n==='war') renderWar(); if(n==='ins') renderIns(); if(n==='ootd') renderOotd(); if(n==='pack') renderPack();
-}
-// 容量解放：不再顯示儲存空間百分比，改顯示你的戰績！
+function go(n){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.getElementById('p-'+n).classList.add('active'); document.querySelectorAll('.nav-item').forEach(t=>t.classList.toggle('active', t.getAttribute('onclick').includes(n))); window.scrollTo(0,0); if(n==='war') renderWar(); if(n==='ins') renderIns(); if(n==='ootd') renderOotd(); if(n==='pack') renderPack(); }
 function updateSt(){ document.getElementById('st-txt').textContent = `🧥 ${W.length}件 | 📸 ${OOTD.length}套`; }
 </script>
 </body>
