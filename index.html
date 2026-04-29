@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>智慧衣櫥 v5.16 — 質感視覺版</title>
 
+<meta name="apple-mobile-web-app-title" content="我的衣櫥">
+<meta name="application-name" content="我的衣櫥">
+
+<link rel="apple-touch-icon" sizes="180x180" href="https://img.icons8.com/fluency/512/w.png">
+<link rel="icon" type="image/png" sizes="192x192" href="https://img.icons8.com/fluency/512/w.png">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -109,7 +115,7 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--blue);}
 
 .bottom-nav{position:fixed; bottom:0; left:0; right:0; background:var(--nav-bg); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); display:flex; justify-content:space-around; padding:10px 0 calc(10px + env(safe-area-inset-bottom)); box-shadow:0 -1px 0 rgba(0,0,0,0.05); z-index:100; transition: background 0.3s;}
 .nav-item{display:flex; flex-direction:column; align-items:center; color:var(--mut); border:none; background:none; font-size:10px; font-weight:600; gap:4px; flex:1;}
-.nav-item.active{color:var(--blue);} /* 點亮時改用亮藍色，深淺色都好看 */
+.nav-item.active{color:var(--blue);} 
 .icon{font-size:22px;}
 
 .toast{position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-100px); background:var(--blue); color:#fff; padding:12px 24px; border-radius:99px; transition:0.4s; z-index:1100; font-weight:600; white-space:nowrap; box-shadow:0 10px 30px rgba(0,122,255,0.3);}
@@ -313,7 +319,7 @@ function toggleTheme() {
   document.getElementById('meta-theme-color').setAttribute("content", isDark ? "#000000" : "#F5F7FA");
   localStorage.setItem('wardrobe_theme', isDark ? 'dark' : 'light');
 }
-initTheme(); // 載入時立即執行
+initTheme();
 
 // --- 資料庫引擎 (IndexedDB) ---
 const DB_NAME = 'WardrobeProDB'; const STORE_NAME = 'AppState'; let idb;
@@ -342,7 +348,6 @@ function idbGet(key) {
   });
 }
 
-// 啟動邏輯
 window.onload = async () => {
   try {
     await initDB();
@@ -368,7 +373,6 @@ window.onload = async () => {
 
 function cpw(i) { return Math.round(i.price / ((i.wears || []).length || 1)); }
 
-// --- 以下為核心邏輯 (與v5.15相同) ---
 async function onFile(e){
   const files = e.target.files; if(!files.length) return; toast('照片處理中...');
   for(let f of files){
