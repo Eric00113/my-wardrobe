@@ -17,16 +17,13 @@
 <meta name="theme-color" content="#F5F7FA" id="meta-theme-color">
 
 <style>
-/* ─── 核心質感樣式 (支援深/淺色變數) ─── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0; -webkit-tap-highlight-color:transparent;}
 :root{
-  /* 預設淺色主題 */
   --bg: #F5F7FA; --sur: #FFFFFF; --sur2: #F0F2F5; --txt: #1C1C1E; --mut: #8E8E93;
   --accent: #2C2C2E; --blue: #007AFF; --red: #FF3B30; --shadow: 0 8px 24px rgba(0,0,0,0.04);
   --nav-bg: rgba(255,255,255,0.85); --r: 16px; --rl: 24px; --cal-cell-size: 1fr;
 }
 
-/* 🌙 深色主題覆蓋 */
 body.dark-mode {
   --bg: #000000; --sur: #1C1C1E; --sur2: #2C2C2E; --txt: #F2F2F7; --mut: #98989D;
   --accent: #E5E5EA; --nav-bg: rgba(28,28,30,0.85); --shadow: 0 8px 24px rgba(0,0,0,0.4);
@@ -42,14 +39,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; 
 .hd-t{font-size:22px; font-weight:800; letter-spacing:-0.5px}
 .storage-txt{font-size:12px; color:var(--blue); font-weight:700;}
 
-/* 主題切換按鈕 */
 .theme-btn { background: var(--sur); border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; box-shadow: var(--shadow); transition: 0.3s; }
 
 .panel{display:none; animation:fadeIn 0.3s ease;}
 .panel.active{display:block}
 @keyframes fadeIn { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)} }
 
-/* 區塊與表單 */
 .zone{background:var(--sur); border-radius:var(--rl); padding:2.5rem 1rem; text-align:center; cursor:pointer; box-shadow:var(--shadow); transition: 0.3s;}
 .ef{background:var(--sur); border-radius:var(--rl); padding:20px; margin-top:16px; box-shadow:var(--shadow); transition: 0.3s;}
 .g2{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px}
@@ -61,7 +56,6 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--blue);}
 .chk-group label{display:flex; align-items:center; gap:4px; cursor:pointer;}
 .chk-group input{width:auto; transform:scale(1.2);}
 
-/* 衣櫥工具列與卡片 */
 .tool-bar{display:flex; gap:8px; margin-bottom:16px;}
 .search-box{flex:1; display:flex; align-items:center; background:var(--sur); border-radius:99px; padding:4px 16px; box-shadow:var(--shadow); transition: 0.3s;}
 .search-box input{border:none; background:transparent; padding:10px 5px; width:100%; color:var(--txt);}
@@ -74,13 +68,11 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--blue);}
 .c-name{font-weight:700; font-size:14px; margin-bottom:4px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;}
 .tag{font-size:10px; padding:4px 8px; border-radius:6px; background:var(--sur2); color:var(--mut); font-weight:700; display:inline-block; margin-bottom:4px; margin-right:4px;}
 
-/* 彈出視窗 */
 .btn-edit-float{position:absolute; top:8px; right:8px; background:rgba(255,255,255,0.8); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.1); border:none; color:#333;}
 .modal-overlay{position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); display:none; align-items:center; justify-content:center; z-index:1000; padding:20px;}
 .modal-overlay.active{display:flex;}
 .modal-card{background:var(--sur); width:100%; max-width:400px; border-radius:var(--rl); padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.3); max-height:90vh; overflow-y:auto; transition: 0.3s;}
 
-/* 穿搭與扭蛋 */
 .cal-wrapper{overflow-x:auto; padding-bottom:10px;}
 .cal-grid{display:grid; grid-template-columns:repeat(7, minmax(var(--cal-cell-size), 1fr)); gap:4px; margin-top:8px;}
 .cal-day{aspect-ratio:1; border-radius:8px; background:var(--sur2); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--mut); position:relative; overflow:hidden; border:1px solid rgba(0,0,0,0.05);}
@@ -89,13 +81,11 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--blue);}
 .roulette-box{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:20px 0;}
 .r-img{width:110px; height:110px; border-radius:var(--r); object-fit:cover; box-shadow:var(--shadow);}
 
-/* 收藏清單 */
 .fav-strip{display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; margin-top:12px;}
 .fav-item{min-width:100px; background:var(--sur2); border-radius:12px; padding:4px; display:flex; flex-direction:column; gap:4px; position:relative;}
 .fav-img{width:100%; height:80px; object-fit:cover; border-radius:8px;}
 .del-fav{position:absolute; top:-6px; right:-6px; background:var(--red); color:#fff; border:none; width:20px; height:20px; border-radius:50%; font-size:10px; cursor:pointer;}
 
-/* 旅行打包清單 */
 .pack-item{background:var(--sur); border-radius:var(--rl); padding:16px; margin-bottom:12px; box-shadow:var(--shadow); border-left:4px solid var(--blue); transition: 0.3s;}
 .pack-day-row{background:var(--sur2); border-radius:12px; padding:12px; margin-top:12px;}
 .pack-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:8px; margin-top:12px;}
@@ -107,7 +97,6 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--blue);}
 .pack-check-icon{position:absolute; inset:0; display:none; align-items:center; justify-content:center; font-size:24px; z-index:2;}
 .pack-luggage-item.is-packed .pack-check-icon{display:flex;}
 
-/* 按鈕與導覽列 */
 .btn{cursor:pointer; padding:12px; border-radius:99px; border:none; width:100%; font-family:inherit; font-size:14px; font-weight:700; margin-top:8px; transition:0.2s;}
 .btn-p{background:var(--accent); color:#fff;}
 .btn-sec{background:var(--sur2); color:var(--txt);}
@@ -123,7 +112,6 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--blue);}
 
 .stat-box{background:var(--sur); padding:20px; border-radius:var(--rl); box-shadow:var(--shadow); transition: 0.3s;}
 
-/* 載入畫面 */
 #loading-screen{position:fixed; inset:0; background:var(--bg); z-index:9999; display:flex; align-items:center; justify-content:center; flex-direction:column;}
 @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
 </style>
@@ -302,11 +290,9 @@ input:focus,select:focus{outline:none; box-shadow:0 0 0 2px var(--blue);}
 <div class="toast" id="toast"></div>
 
 <script>
-// --- 主題切換邏輯 (Dark Mode) ---
 function initTheme() {
   const savedTheme = localStorage.getItem('wardrobe_theme');
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-  
   if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
     document.body.classList.add('dark-mode');
     document.getElementById('theme-toggle').textContent = '☀️';
@@ -321,7 +307,6 @@ function toggleTheme() {
 }
 initTheme();
 
-// --- 資料庫引擎 (IndexedDB) ---
 const DB_NAME = 'WardrobeProDB'; const STORE_NAME = 'AppState'; let idb;
 let W=[], OOTD=[], PACK=[], FAV=[]; let uploadQueue = [];
 const sizeOrder = { 'XS':1, 'S':2, 'M':3, 'L':4, 'XL':5, 'XXL':6, 'F':7, '未填':99 };
@@ -361,7 +346,6 @@ window.onload = async () => {
         localStorage.removeItem('wv59'); localStorage.removeItem('wv59_ootd'); localStorage.removeItem('wv59_pack'); localStorage.removeItem('wv59_fav');
     }
   } catch (err) {
-    console.warn("退回安全模式", err);
     W = JSON.parse(localStorage.getItem('wv59') || '[]'); OOTD = JSON.parse(localStorage.getItem('wv59_ootd') || '[]');
     PACK = JSON.parse(localStorage.getItem('wv59_pack') || '[]'); FAV = JSON.parse(localStorage.getItem('wv59_fav') || '[]');
   } finally {
@@ -404,6 +388,20 @@ function renderWar(){
   const g = document.getElementById('wgrid'); const q = document.getElementById('search-input').value.toLowerCase(); const sort = document.getElementById('sort-order').value;
   let list = W.filter(i=> i.name.toLowerCase().includes(q) || i.type.toLowerCase().includes(q) || (i.color||'').toLowerCase().includes(q) || (i.season||'').includes(q));
   if(sort === 'cpw_high') list.sort((a,b)=> cpw(b) - cpw(a)); else if(sort === 'cpw_low') list.sort((a,b)=> cpw(a) - cpw(b)); else if(sort === 'wear_most') list.sort((a,b)=> (b.wears||[]).length - (a.wears||[]).length); else if(sort === 'size_asc') list.sort((a,b)=> (sizeOrder[a.size]||99) - (sizeOrder[b.size]||99)); else list.sort((a,b)=> b.id - a.id);
+  
+  if (!list.length) {
+    g.style.display = 'block';
+    g.innerHTML = `
+      <div style="text-align:center; padding:60px 20px;">
+        <div style="font-size:50px; margin-bottom:16px;">🪄</div>
+        <h3 style="margin-bottom:8px; color:var(--txt);">衣櫥空空如也</h3>
+        <p style="color:var(--mut); font-size:14px; margin-bottom:24px; line-height:1.6;">這裡還沒有任何單品喔！<br>趕快去新增你的第一件衣服吧。</p>
+        <button class="btn btn-p" style="max-width:200px; margin:0 auto;" onclick="go('cat')">✨ 立即新增單品</button>
+      </div>
+    `;
+    return;
+  }
+  g.style.display = 'grid';
   g.innerHTML = list.map(i=>`<div class="card"><button class="btn-edit-float" onclick="openEdit(${i.id})">✎</button><img src="${i.image}" class="cimg"><div class="cbody"><div class="c-name">${i.name}</div><div style="margin-bottom:4px;"><span class="tag">Size: ${i.size || '未填'}</span><span class="tag" style="background:${getColorCode(i.color)}20; color:${getColorCode(i.color)};">${i.color}</span></div>${i.season ? `<div style="font-size:10px; color:var(--mut); margin-bottom:4px;">🍂 ${i.season}</div>` : ''}<button class="btn btn-sm btn-p" style="margin-top:auto; padding:6px;" onclick="logW(${i.id})">打卡 (${(i.wears||[]).length})</button></div></div>`).join('');
 }
 
@@ -444,7 +442,17 @@ async function onOotdFile(e) {
 }
 function renderOotd() {
   renderFavs(); const mode = document.getElementById('ootd-view-toggle').value; const c = document.getElementById('ootd-content'); const zctrl = document.getElementById('cal-zoom-ctrl');
-  if(!OOTD.length) { c.innerHTML = '<p style="text-align:center; color:var(--mut);">還沒有紀錄喔！</p>'; zctrl.style.display='none'; return; }
+  if(!OOTD.length) { 
+    c.innerHTML = `
+      <div style="text-align:center; padding:40px 20px; background:var(--sur2); border-radius:var(--rl); margin-top:16px;">
+        <div style="font-size:48px; margin-bottom:12px;">📸</div>
+        <h3 style="margin-bottom:8px; color:var(--txt);">還沒有穿搭紀錄</h3>
+        <p style="color:var(--mut); font-size:13px; line-height:1.6;">今天穿得這麼好看，不拍張照紀錄一下嗎？<br>點擊上方的按鈕留下今天的 OOTD 吧！</p>
+      </div>
+    `; 
+    zctrl.style.display='none'; 
+    return; 
+  }
   if(mode === 'list') { zctrl.style.display = 'none'; document.documentElement.style.setProperty('--cal-cell-size', '1fr'); c.innerHTML = '<div style="display:grid; gap:16px;">' + OOTD.map(o => `<div class="card" style="padding-bottom:0;"><img src="${o.image}" style="width:100%; max-height:450px; object-fit:cover;"><div style="padding:16px; display:flex; justify-content:space-between; align-items:center;"><div><div style="font-weight:800;">${o.date}</div><div style="font-size:12px; color:var(--mut);">${o.note||''}</div></div><button class="btn-danger" style="margin:0; background:#FFF1F0; padding:6px 12px; border-radius:8px;" onclick="delOotd(${o.id})">刪除</button></div></div>`).join('') + '</div>';
   } else { zctrl.style.display = 'flex'; const today = new Date(); const daysInMonth = new Date(today.getFullYear(), today.getMonth()+1, 0).getDate(); let calHTML = '<div class="cal-wrapper"><div class="cal-grid">'; for(let d=1; d<=daysInMonth; d++) { const dateStr = new Date(today.getFullYear(), today.getMonth(), d).toLocaleDateString('zh-TW'); const ootdToday = OOTD.find(o => o.date === dateStr); if(ootdToday) calHTML += `<div class="cal-day has-ootd" style="background-image:url(${ootdToday.image})" onclick="alert('${dateStr}\\n${ootdToday.note||'無筆記'}')">${d}</div>`; else calHTML += `<div class="cal-day">${d}</div>`; } c.innerHTML = calHTML + '</div></div>'; }
 }
@@ -452,7 +460,18 @@ async function delOotd(id) { if(confirm('確定刪除？')) { OOTD = OOTD.filter
 
 async function createPack() { const name = prompt('旅行名稱？'); if(!name) return; const days = parseInt(prompt('天數？', '3')); if(!days || days <= 0) return; let plan = {}; for(let d=1; d<=days; d++) plan[d] = []; PACK.unshift({ id: Date.now(), name: name, days: days, plan: plan, weather: {}, packed: [] }); await saveAll(); renderPack(); }
 function renderPack() {
-  const list = document.getElementById('pack-list'); if(!PACK.length) { list.innerHTML = '<p style="text-align:center; color:var(--mut); padding:2rem;">無計畫</p>'; return; }
+  const list = document.getElementById('pack-list'); 
+  if(!PACK.length) { 
+    list.innerHTML = `
+      <div style="text-align:center; padding:50px 20px; background:var(--sur); border-radius:var(--rl); box-shadow:var(--shadow);">
+        <div style="font-size:48px; margin-bottom:12px;">🏝️</div>
+        <h3 style="margin-bottom:8px; color:var(--txt);">準備去哪裡玩？</h3>
+        <p style="color:var(--mut); font-size:13px; line-height:1.6; margin-bottom:20px;">建立你的旅行計畫，<br>輕鬆打包行李，出門不漏帶！</p>
+        <button class="btn btn-sec" style="max-width:200px; margin:0 auto; color:var(--blue);" onclick="createPack()">+ 建立第一趟旅行</button>
+      </div>
+    `; 
+    return; 
+  }
   list.innerHTML = PACK.map(p => { let daysHtml = ''; for(let d=1; d<=p.days; d++) { const dayItems = W.filter(w => (p.plan[d]||[]).includes(w.id)); daysHtml += `<div class="pack-day-row"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><span style="font-weight:800; font-size:14px;">第 ${d} 天</span><button onclick="openPackDay(${p.id}, ${d})" style="background:none; border:none; color:var(--blue); font-weight:700; cursor:pointer;">✎ 挑選</button></div><input type="text" style="padding:6px 10px; font-size:12px; margin-bottom:10px;" placeholder="天氣 (如：20°C)" value="${(p.weather||{})[d]||''}" onchange="updateWeather(${p.id}, ${d}, this.value)"><div style="display:flex; gap:8px; overflow-x:auto;">${dayItems.length ? dayItems.map(i=>`<div class="pack-luggage-item ${(p.packed||[]).includes(i.id) ? 'is-packed' : ''}" onclick="togglePackItem(${p.id}, ${i.id})"><img src="${i.image}" class="pack-luggage-img"><div class="pack-check-icon">✅</div></div>`).join('') : '<span style="font-size:12px; color:var(--mut);">無</span>'}</div></div>`; } return `<div class="pack-item"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"><h4 style="font-weight:800; font-size:18px;">${p.name}</h4><button class="btn-danger" style="margin:0; background:#FFF1F0; border-radius:8px;" onclick="delPack(${p.id})">刪除</button></div>${daysHtml}</div>`; }).join('');
 }
 async function updateWeather(pid, day, val) { let p = PACK.find(x => x.id === pid); if(p) { if(!p.weather) p.weather = {}; p.weather[day] = val; await saveAll(); } }
@@ -478,6 +497,18 @@ async function saveAll(){ try { await idbSet('W',W); await idbSet('OOTD',OOTD); 
 function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
 function go(n){ document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active')); document.getElementById('p-'+n).classList.add('active'); document.querySelectorAll('.nav-item').forEach(t=>t.classList.toggle('active', t.getAttribute('onclick').includes(n))); window.scrollTo(0,0); if(n==='war') renderWar(); if(n==='ins') renderIns(); if(n==='ootd') renderOotd(); if(n==='pack') renderPack(); }
 function updateSt(){ document.getElementById('st-txt').textContent = `🧥 ${W.length}件 | 📸 ${OOTD.length}套`; }
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(registration => {
+        console.log('Service Worker 註冊成功！範圍是:', registration.scope);
+      })
+      .catch(error => {
+        console.log('Service Worker 註冊失敗:', error);
+      });
+  });
+}
 </script>
 </body>
 </html>
